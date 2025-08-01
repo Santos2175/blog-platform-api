@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { connectToMongoDB } from './config/db.config';
 import { globalErrorHandler } from './middlewares/error.middleware';
 import { undefinedRouteHandler } from './middlewares/route.middleware';
+import apiRoutes from './routes/index';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -15,6 +16,9 @@ const app = express();
 
 // Middleware to parse JSON requests
 app.use(express.json());
+
+// API routes
+app.use('/api/v1', apiRoutes);
 
 // Middleware to check undefined routes
 app.use(undefinedRouteHandler);
