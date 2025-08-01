@@ -24,6 +24,26 @@ class BlogController {
       next(error);
     }
   }
+
+  /**
+   * @route       GET /api/v1/blogs/:blogId
+   * @access      Public
+   * @description Handles getting blog by id
+   */
+  public async getBlogById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const blogId = req.params.blogId;
+      const blog = await blogService.getBlogById(blogId);
+
+      res.status(200).json({
+        success: true,
+        message: 'Blog retrieved successfully',
+        data: { blog },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const blogController = new BlogController();

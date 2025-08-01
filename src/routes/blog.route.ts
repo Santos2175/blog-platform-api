@@ -6,5 +6,6 @@ const router = Router();
 
 // Blog API routes
 router.route('/').get(blogController.getAllBlogs);
+router.route('/:blogId').get(blogController.getBlogById);
 
 export default router;
