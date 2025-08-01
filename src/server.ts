@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import { connectToMongoDB } from './config/db.config';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -15,5 +16,6 @@ app.use(express.json());
 
 // Start the server
 app.listen(PORT, () => {
+  connectToMongoDB();
   console.log(`Server started at PORT:${PORT}`);
 });
