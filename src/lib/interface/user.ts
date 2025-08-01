@@ -1,3 +1,5 @@
+import { Document, Types } from 'mongoose';
+
 // Represents shape of user object used during creation
 export interface IUser {
   fullName: string;
@@ -6,8 +8,8 @@ export interface IUser {
 }
 
 // Represents shape of user object used during API response
-export interface IUserResponse extends IUser {
-  _id: string;
+export interface IUserResponse extends IUser, Document {
+  _id: string | Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
