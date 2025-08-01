@@ -54,6 +54,10 @@ export class AuthService {
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
+    // Save refresh token to user document
+    user.refreshToken = refreshToken;
+    await user.save();
+
     return { user, accessToken, refreshToken };
   }
 
