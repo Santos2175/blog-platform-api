@@ -5,6 +5,7 @@ export interface IUser {
   fullName: string;
   email: string;
   password: string;
+  refreshToken?: string;
 }
 
 // Represents shape of user object used during API response

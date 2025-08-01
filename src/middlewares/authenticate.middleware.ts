@@ -1,11 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { ApiError } from './error.middleware';
 import { verifyToken } from '../lib/utils/token';
 import { TokenPayload } from '../lib/interface/token';
+import { AuthenticatedRequest } from '../lib/interface/request';
 
 // Middleware to check and verify token for authentication
 export async function authenticate(
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> {

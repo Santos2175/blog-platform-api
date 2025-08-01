@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { authService } from '../services/auth.service';
 import { IUser } from '../lib/interface/user';
 import { ApiError } from '../middlewares/error.middleware';
+import { AuthenticatedRequest } from '../lib/interface/request';
 
 export class AuthController {
   /**
@@ -53,6 +54,28 @@ export class AuthController {
       res
         .status(200)
         .json({ success: true, data: { user, accessToken, refreshToken } });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @method      POST /api/v1/auth/logout
+   * @access      Private
+   * @description Handles user logout
+   */
+  public async logout(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?._id;
+      await authService.logout(userId!);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'User logged out successfully' });
     } catch (error) {
       next(error);
     }

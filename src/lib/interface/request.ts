@@ -1,10 +1,7 @@
 import { TokenPayload } from './token';
+import { Request } from 'express';
 
 // Extending request to inclue req.user too
-declare global {
-  namespace Express {
-    interface Request {
-      user?: TokenPayload;
-    }
-  }
+export interface AuthenticatedRequest extends Request {
+  user?: TokenPayload;
 }

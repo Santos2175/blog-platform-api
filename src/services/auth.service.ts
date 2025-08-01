@@ -56,6 +56,18 @@ export class AuthService {
 
     return { user, accessToken, refreshToken };
   }
+
+  // Logout user and clear the refreshToken
+  public async logout(userId: string) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    user.refreshToken = undefined;
+    await user.save();
+  }
 }
 
 export const authService = new AuthService();
