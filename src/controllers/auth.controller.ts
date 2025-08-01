@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { authService } from '../services/auth.service';
-import { IUser, IUserResponse } from '../lib/interface/user';
+import { IUser } from '../lib/interface/user';
 import { ApiError } from '../middlewares/error.middleware';
 
 export class AuthController {
@@ -29,6 +29,30 @@ export class AuthController {
           user,
         },
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @route       POST /api/v1/auth/login
+   * @access      Public
+   * @description Handles user login
+   */
+  public async login(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userData: Pick<IUser, 'email' | 'password'> = req.body;
+      const { user, accessToken, refreshToken } = await authService.login(
+        userData
+      );
+
+      res
+        .status(200)
+        .json({ success: true, data: { user, accessToken, refreshToken } });
     } catch (error) {
       next(error);
     }
