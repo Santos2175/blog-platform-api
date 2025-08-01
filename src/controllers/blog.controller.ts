@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { blogService } from '../services/blog.service';
+import { IBlog } from '../lib/interface/blog';
+import { AuthenticatedRequest } from '../lib/interface/request';
 
 class BlogController {
   /**
@@ -38,6 +40,32 @@ class BlogController {
       res.status(200).json({
         success: true,
         message: 'Blog retrieved successfully',
+        data: { blog },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @route       POST /api/v1/blogs/
+   * @access      Private
+   * @description Handles new blog creation
+   */
+  public async createBlog(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?._id;
+      const blogData: IBlog = req.body;
+
+      const blog = await blogService.createBlog(blogData, userId!);
+
+      res.status(200).json({
+        success: true,
+        message: 'Blog created successfully',
         data: { blog },
       });
     } catch (error) {

@@ -1,11 +1,16 @@
 import Router from 'express';
 import { blogController } from '../controllers/blog.controller';
+import { authenticate } from '../middlewares/authenticate.middleware';
 
 // Router initialization
 const router = Router();
 
 // Blog API routes
-router.route('/').get(blogController.getAllBlogs);
+router
+  .route('/')
+  .get(blogController.getAllBlogs)
+  .post(authenticate, blogController.createBlog);
+
 router.route('/:blogId').get(blogController.getBlogById);
 
 export default router;
