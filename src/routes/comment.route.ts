@@ -6,6 +6,9 @@ import { commentController } from '../controllers/comment.controller';
 const router = Router();
 
 // Comment API routes
-router.route('/:blogId').post(authenticate, commentController.addComment);
+router
+  .route('/:blogId')
+  .post(authenticate, commentController.addComment)
+  .get(commentController.getCommentsByBlog);
 
 export default router;

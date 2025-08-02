@@ -38,6 +38,30 @@ export class CommentService {
 
     return comment;
   }
+
+  // Get all comments for a specific blog
+  public async getCommentsByBlog(
+    blogId: string
+  ): Promise<IComment | IComment[]> {
+    // Check if blog id is valid
+    if (!isValidObjectId(blogId)) {
+      throw new ApiError('Invalid blog id', 400);
+    }
+
+    // Check if blog exists
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      throw new ApiError('Blog not found', 404);
+    }
+
+    // Find and return comments if exists
+    const comments = await Comment.find()
+      .populate('author', 'fullName email')
+      .populate('blog', 'title');
+
+    return comments;
+  }
 }
 
 export const commentService = new CommentService();

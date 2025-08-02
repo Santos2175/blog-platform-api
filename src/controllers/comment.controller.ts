@@ -33,6 +33,30 @@ export class CommentController {
       next(error);
     }
   }
+
+  /**
+   * @route       GET /api/v1/comments/:blogId
+   * @access      Public
+   * @description Handles getting comments for a specific blog
+   */
+  public async getCommentsByBlog(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const blogId = req.params.blogId;
+      const comments = await commentService.getCommentsByBlog(blogId);
+
+      res.status(200).json({
+        success: true,
+        message: 'Comments retrieved successfully',
+        data: { comments },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const commentController = new CommentController();
