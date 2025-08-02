@@ -16,4 +16,6 @@ router
   .get(blogController.getBlogById)
   .patch(authenticate, blogController.updateBlog);
 
+router.route('/:userId/blogs').get(blogController.getBlogsByUser);
+
 export default router;

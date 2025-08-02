@@ -28,6 +28,31 @@ class BlogController {
   }
 
   /**
+   * @route       GET /api/v1/blogs/:userId/blogs
+   * @access      Public
+   * @description Handles retrieving blogs of particular user
+   */
+  public async getBlogsByUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.params.userId;
+
+      const blogs = await blogService.getBlogsByUser(userId);
+
+      res.status(200).json({
+        success: true,
+        message: 'Blogs retrieved successfully',
+        data: { blogs },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * @route       GET /api/v1/blogs/:blogId
    * @access      Public
    * @description Handles getting blog by id

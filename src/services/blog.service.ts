@@ -2,6 +2,7 @@ import { isValidObjectId, Types } from 'mongoose';
 import { ApiError } from '../middlewares/error.middleware';
 import { Blog } from '../models/blog.model';
 import { IBlog } from '../lib/interface/blog';
+import { User } from '../models/user.model';
 
 export class BlogService {
   // Get all the blogs
@@ -25,6 +26,25 @@ export class BlogService {
     }
 
     return blog;
+  }
+
+  // Get blogs belonging to particular user
+  public async getBlogsByUser(userId: string): Promise<IBlog | IBlog[]> {
+    // Check if user id is valid
+    if (!isValidObjectId(userId)) {
+      throw new ApiError('Invalid userId', 400);
+    }
+
+    // Check if user exists
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    const blogs = await Blog.find({ author: userId }).sort({ createdAt: -1 });
+
+    return blogs;
   }
 
   // Create new blog
