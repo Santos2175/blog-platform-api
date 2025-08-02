@@ -89,6 +89,11 @@ export class CommentController {
     }
   }
 
+  /**
+   * @route       DELETE /api/v1/comments/:commentId
+   * @access      Private
+   * @description Handles comment deletion done by authenticated user
+   */
   public async deleteComment(
     req: AuthenticatedRequest,
     res: Response,
