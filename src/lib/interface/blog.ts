@@ -21,3 +21,14 @@ export interface IBlogResponse extends IBlog {
 export interface IBlogInput extends Pick<IBlog, 'title' | 'description'> {
   tags?: string[];
 }
+
+// Represents the shape of blog query params
+export interface BlogQueryParams {
+  author?: string;
+  tag?: string;
+  search?: string;
+  sortBy?: 'title' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+}

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { blogService } from '../services/blog.service';
-import { IBlog } from '../lib/interface/blog';
+import { BlogQueryParams, IBlog } from '../lib/interface/blog';
 import { AuthenticatedRequest } from '../lib/interface/request';
 
 export class BlogController {
@@ -15,12 +15,15 @@ export class BlogController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const blogs = await blogService.getAllBlogs();
+      const queryData: BlogQueryParams = req.query;
+
+      const { data, page, limit, total, totalPages } =
+        await blogService.getAllBlogs(queryData);
 
       res.status(200).json({
         success: true,
         message: 'Blogs retrieved successfully',
-        data: { blogs },
+        data: { blogs: data, page, limit, total, totalPages },
       });
     } catch (error) {
       next(error);

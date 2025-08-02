@@ -1,16 +1,87 @@
 import { isValidObjectId, Types } from 'mongoose';
 import { ApiError } from '../middlewares/error.middleware';
 import { Blog } from '../models/blog.model';
-import { IBlog, IBlogInput } from '../lib/interface/blog';
+import { BlogQueryParams, IBlog, IBlogInput } from '../lib/interface/blog';
 import { User } from '../models/user.model';
 import { tagService } from './tag.service';
+import {
+  getEmptyPaginatedResult,
+  PaginatedResponse,
+} from '../lib/utils/pagination';
+import { Tag } from '../models/tag.model';
 
 export class BlogService {
   // Get all the blogs
-  public async getAllBlogs() {
-    const blogs = await Blog.find();
+  public async getAllBlogs(
+    query: BlogQueryParams
+  ): Promise<PaginatedResponse<any>> {
+    const {
+      author,
+      tag,
+      search,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      page = 1,
+      limit = 10,
+    } = query;
 
-    return blogs;
+    const pageOffset: number = (page - 1) * limit;
+
+    // Initialize record filter for searching
+    const filter: Record<string, any> = {};
+
+    // Extract author id from query string
+    if (author) {
+      const cleanedAuthor = author.replace(/%/g, ' ');
+
+      const authorDoc = await User.findOne({
+        fullName: { $regex: cleanedAuthor, $options: 'i' },
+      });
+
+      if (!authorDoc) {
+        return getEmptyPaginatedResult(page, limit);
+      }
+
+      filter.author = new Types.ObjectId(authorDoc._id);
+    }
+
+    // Extract tag id from query tag string
+    if (tag) {
+      const tagDoc = await Tag.findOne({ name: new RegExp(`^${tag}$`, 'i') });
+
+      if (!tagDoc) {
+        return getEmptyPaginatedResult(page, limit);
+      }
+
+      filter.tags = { $in: [tagDoc._id] };
+    }
+
+    if (search) {
+      filter.title = { $regex: search, $options: 'i' };
+    }
+
+    // Set sort order
+    const sortOptions: Record<string, 1 | -1> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
+
+    const blogs = await Blog.find(filter)
+      .populate('author', 'fullName email')
+      .populate('tags', 'name')
+      .sort(sortOptions)
+      .skip(pageOffset)
+      .limit(limit)
+      .lean();
+
+    const total = await Blog.countDocuments(filter);
+
+    return {
+      data: blogs,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   // Get blog by id
