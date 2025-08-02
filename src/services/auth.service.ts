@@ -1,12 +1,17 @@
+import { OTP_TYPE } from '../lib/interface/Otp';
 import { IUser, IUserResponse } from '../lib/interface/user';
+import { generateOtp } from '../lib/utils/otp';
 import { comparePassword, hashPassword } from '../lib/utils/password';
 import { generateAccessToken, generateRefreshToken } from '../lib/utils/token';
 import { ApiError } from '../middlewares/error.middleware';
+import { Otp } from '../models/Otp.model';
 import { User } from '../models/user.model';
 
 export class AuthService {
   // Register new user with hashed password
-  public async register(userData: IUser) {
+  public async register(
+    userData: IUser
+  ): Promise<{ otp: string; user: IUser }> {
     // Check if user already exists
     const existingUser = await User.findOne({ email: userData.email });
 
@@ -24,9 +29,20 @@ export class AuthService {
       password: hashedPassword,
     });
 
+    // Generate Otp code and its expiry time
+    const otp = generateOtp();
+    const otpExpiresAt = Date.now() + 15 * 60 * 1000;
+
+    await Otp.create({
+      email: userData.email,
+      otp,
+      expiresAt: otpExpiresAt,
+      type: OTP_TYPE.EMAIL_VERIFICATION,
+    });
+
     await user.save();
 
-    return user;
+    return { user, otp };
   }
 
   // Login user with email and password
@@ -43,6 +59,11 @@ export class AuthService {
 
     if (!isMatch) {
       throw new ApiError('Invalid Credentials', 400);
+    }
+
+    // Check if email is verified
+    if (!user.isEmailVerified) {
+      throw new ApiError('Email not verified. Please verify your email', 400);
     }
 
     const payload = {

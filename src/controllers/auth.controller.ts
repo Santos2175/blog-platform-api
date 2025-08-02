@@ -17,7 +17,7 @@ export class AuthController {
   ): Promise<void> {
     try {
       const userData: IUser = req.body;
-      const user = await authService.register(userData);
+      const { user, otp } = await authService.register(userData);
 
       if (!user) {
         throw new ApiError('User registration failed', 400);
@@ -25,9 +25,10 @@ export class AuthController {
 
       res.status(201).json({
         success: true,
-        message: 'User registered successfully',
+        message: 'Verification code sent. Please verify your email',
         data: {
           user,
+          otp,
         },
       });
     } catch (error) {

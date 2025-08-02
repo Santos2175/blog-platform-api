@@ -22,6 +22,10 @@ const userSchema = new Schema<IUser>(
       role: UserRole,
       default: UserRole.USER,
     },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
     refreshToken: {
       type: String,
     },
