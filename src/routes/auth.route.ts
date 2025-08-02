@@ -23,4 +23,6 @@ router.route('/logout').post(authenticate, authController.logout);
 
 router.route('/verify-email').post(authController.verifyEmail);
 
+router.route('/resend-otp').post(authController.resendOtp);
+
 export default router;

@@ -1,6 +1,6 @@
 import { OTP_TYPE } from '../lib/interface/Otp';
 import { IUser } from '../lib/interface/user';
-import { generateOtp } from '../lib/utils/otp';
+import { generateOtp, getOtpExpiry } from '../lib/utils/otp';
 import { comparePassword, hashPassword } from '../lib/utils/password';
 import { generateAccessToken, generateRefreshToken } from '../lib/utils/token';
 import { ApiError } from '../middlewares/error.middleware';
@@ -128,6 +128,45 @@ export class AuthService {
       type: OTP_TYPE.EMAIL_VERIFICATION,
       verified: false,
     });
+  }
+
+  // Resend otp based for email_verification or reset-password
+  public async resendOtp(
+    email: string,
+    type: OTP_TYPE
+  ): Promise<{ otp: string }> {
+    // Check if user exists
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    // If type==='EMAIL_VERIFICATION', check if already verified
+    if (type === OTP_TYPE.EMAIL_VERIFICATION && user.isEmailVerified) {
+      throw new ApiError('Email already verified', 400);
+    }
+
+    // Delete old unverified OTPs of this type
+    await Otp.deleteMany({
+      email,
+      type,
+      verified: false,
+    });
+
+    // Generate and save new OTP
+    const otp = generateOtp();
+    const expiresAt = getOtpExpiry(type);
+
+    await Otp.create({
+      email,
+      otp,
+      type,
+      expiresAt,
+      verified: false,
+    });
+
+    return { otp };
   }
 }
 

@@ -104,6 +104,28 @@ export class AuthController {
       next(error);
     }
   }
+
+  public async resendOtp(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { email, type } = req.body;
+
+      const { otp } = await authService.resendOtp(email, type);
+
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: `OTP sent for ${type}`,
+          data: { otp },
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();
