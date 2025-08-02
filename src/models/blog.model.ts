@@ -9,7 +9,7 @@ const blogSchema = new Schema<IBlog>(
       required: true,
       index: true,
     },
-    content: {
+    description: {
       type: String,
       required: true,
     },

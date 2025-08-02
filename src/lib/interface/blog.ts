@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 // Represents shape of blog object used during creation
 export interface IBlog {
   title: string;
-  content: string;
+  description: string;
   author: Types.ObjectId;
   comments?: Types.ObjectId[];
   tags?: Types.ObjectId[];
@@ -16,8 +16,8 @@ export interface IBlogResponse extends IBlog {
   updated: Date;
 }
 
-// Pick only fields: title,content from IBlog
+// Pick only fields: title, description from IBlog
 // Represents shape for the client input
-export interface IBlogInput extends Pick<IBlog, 'title' | 'content'> {
+export interface IBlogInput extends Pick<IBlog, 'title' | 'description'> {
   tags?: string[];
 }

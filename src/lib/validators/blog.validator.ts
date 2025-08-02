@@ -10,7 +10,7 @@ export const blogInputSchema = Joi.object({
     'any.required': 'Title is required',
   }),
 
-  content: Joi.string().trim().min(10).max(1000).required().messages({
+  description: Joi.string().trim().min(10).max(1000).required().messages({
     'string.base': 'Content must be a string',
     'string.empty': 'Content is required',
     'string.min': 'Content must be at least 10 characters long',
@@ -36,7 +36,7 @@ export const blogUpdateSchema = Joi.object({
     })
     .optional(),
 
-  content: Joi.string()
+  description: Joi.string()
     .trim()
     .min(10)
     .max(1000)

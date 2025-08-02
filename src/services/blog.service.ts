@@ -85,7 +85,7 @@ export class BlogService {
 
     const blog = new Blog({
       title: blogData.title,
-      content: blogData.content,
+      description: blogData.description,
       author: authorId,
       tags: tagIds,
     });
@@ -114,10 +114,10 @@ export class BlogService {
     }
 
     // Update blog
-    const { title, content } = blogData;
+    const { title, description } = blogData;
 
     if (typeof title === 'string') blog.title = title;
-    if (typeof content === 'string') blog.content = content;
+    if (typeof description === 'string') blog.description = description;
 
     await blog.save();
 
