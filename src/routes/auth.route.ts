@@ -3,8 +3,12 @@ import { authController } from '../controllers/auth.controller';
 import { authenticate } from '../middlewares/authenticate.middleware';
 import { validateInput } from '../middlewares/validateInput.middleware';
 import {
+  forgotPasswordSchema,
+  resendOtpSchema,
+  resetPasswordSchema,
   userLoginSchema,
   userRegisterSchema,
+  verifyEmailSchema,
 } from '../lib/validators/user.validator';
 
 // Router initialization
@@ -21,13 +25,21 @@ router
 
 router.route('/logout').post(authenticate, authController.logout);
 
-router.route('/verify-email').post(authController.verifyEmail);
+router
+  .route('/verify-email')
+  .post(validateInput(verifyEmailSchema), authController.verifyEmail);
 
-router.route('/resend-otp').post(authController.resendOtp);
+router
+  .route('/resend-otp')
+  .post(validateInput(resendOtpSchema), authController.resendOtp);
 
-router.route('/forgot-password').post(authController.forgotPassword);
+router
+  .route('/forgot-password')
+  .post(validateInput(forgotPasswordSchema), authController.forgotPassword);
 
-router.route('/reset-password').post(authController.resetPassword);
+router
+  .route('/reset-password')
+  .post(validateInput(resetPasswordSchema), authController.resetPassword);
 
 router
   .route('/refresh')
