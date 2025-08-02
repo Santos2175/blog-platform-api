@@ -25,4 +25,6 @@ router.route('/verify-email').post(authController.verifyEmail);
 
 router.route('/resend-otp').post(authController.resendOtp);
 
+router.route('/forgot-password').post(authController.forgotPassword);
+
 export default router;

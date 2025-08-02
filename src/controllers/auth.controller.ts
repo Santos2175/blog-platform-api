@@ -105,6 +105,11 @@ export class AuthController {
     }
   }
 
+  /**
+   * @route       POST /api/v1/auth/resend-otp
+   * @access      Public
+   * @description Handles resend otp based on type
+   */
   public async resendOtp(
     req: Request,
     res: Response,
@@ -115,13 +120,36 @@ export class AuthController {
 
       const { otp } = await authService.resendOtp(email, type);
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: `OTP sent for ${type}`,
-          data: { otp },
-        });
+      res.status(200).json({
+        success: true,
+        message: `OTP sent for ${type}`,
+        data: { otp },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @route       POST /api/v1/auth/forgot-password
+   * @access      Public
+   * @description Handles sending otp code for password reset
+   */
+  public async forgotPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { email } = req.body;
+
+      const { otp } = await authService.forgotPassword(email);
+
+      res.status(200).json({
+        success: true,
+        message: 'Password reset otp sent',
+        data: { otp },
+      });
     } catch (error) {
       next(error);
     }

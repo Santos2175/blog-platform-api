@@ -147,6 +147,8 @@ export class AuthService {
       throw new ApiError('Email already verified', 400);
     }
 
+    // @todo: add rate limiting for requesting otp
+
     // Delete old unverified OTPs of this type
     await Otp.deleteMany({
       email,
@@ -162,6 +164,38 @@ export class AuthService {
       email,
       otp,
       type,
+      expiresAt,
+      verified: false,
+    });
+
+    return { otp };
+  }
+
+  public async forgotPassword(email: string): Promise<{ otp: string }> {
+    // Check if user exists
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    // @todo: add rate limiting for resend
+
+    // Remove previous unverified otps
+    await Otp.deleteMany({
+      email,
+      type: OTP_TYPE.RESET_PASSWORD,
+      verified: false,
+    });
+
+    // Generate otp and save
+    const otp = generateOtp();
+    const expiresAt = getOtpExpiry(OTP_TYPE.RESET_PASSWORD);
+
+    await Otp.create({
+      email,
+      otp,
+      type: OTP_TYPE.RESET_PASSWORD,
       expiresAt,
       verified: false,
     });
