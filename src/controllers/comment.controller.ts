@@ -57,6 +57,56 @@ export class CommentController {
       next(error);
     }
   }
+
+  /**
+   * @route       PATCH /api/v1/comments/:commentId
+   * @access      Private
+   * @description Handles editing comment for authenticated user
+   */
+  public async editComment(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?._id;
+      const commentId = req.params.commentId;
+      const commentData = req.body;
+
+      const editedComment = await commentService.editComment(
+        commentData,
+        commentId,
+        userId!
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Comment edited successfully',
+        data: { editedComment },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async deleteComment(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?._id;
+      const commentId = req.params.commentId;
+
+      await commentService.deleteComment(commentId, userId!);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'Comment deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const commentController = new CommentController();

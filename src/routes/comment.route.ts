@@ -11,4 +11,9 @@ router
   .post(authenticate, commentController.addComment)
   .get(commentController.getCommentsByBlog);
 
+router
+  .route('/:commentId')
+  .patch(authenticate, commentController.editComment)
+  .delete(authenticate, commentController.deleteComment);
+
 export default router;
