@@ -17,19 +17,13 @@ export class AuthController {
   ): Promise<void> {
     try {
       const userData: IUser = req.body;
-      const { user, otp } = await authService.register(userData);
 
-      if (!user) {
-        throw new ApiError('User registration failed', 400);
-      }
+      await authService.register(userData);
 
       res.status(201).json({
         success: true,
-        message: 'Verification code sent. Please verify your email',
-        data: {
-          user,
-          otp,
-        },
+        message:
+          'Verification code sent to your email. Please verify your email',
       });
     } catch (error) {
       next(error);
@@ -118,12 +112,11 @@ export class AuthController {
     try {
       const { email, type } = req.body;
 
-      const { otp } = await authService.resendOtp(email, type);
+      await authService.resendOtp(email, type);
 
       res.status(200).json({
         success: true,
-        message: `OTP sent for ${type}`,
-        data: { otp },
+        message: `OTP sent. Please check your mail to verify it`,
       });
     } catch (error) {
       next(error);
@@ -143,12 +136,11 @@ export class AuthController {
     try {
       const { email } = req.body;
 
-      const { otp } = await authService.forgotPassword(email);
+      await authService.forgotPassword(email);
 
       res.status(200).json({
         success: true,
-        message: 'Password reset otp sent',
-        data: { otp },
+        message: 'Password reset OTP sent. Please check your email',
       });
     } catch (error) {
       next(error);

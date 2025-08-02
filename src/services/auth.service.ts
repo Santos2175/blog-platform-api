@@ -1,7 +1,9 @@
+import e from 'express';
 import { OTP_TYPE } from '../lib/interface/Otp';
 import { IUser } from '../lib/interface/user';
 import { generateOtp, getOtpExpiry } from '../lib/utils/otp';
 import { comparePassword, hashPassword } from '../lib/utils/password';
+import { sendEmail } from '../lib/utils/sendEmail';
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -13,9 +15,7 @@ import { User } from '../models/user.model';
 
 export class AuthService {
   // Register new user with hashed password
-  public async register(
-    userData: IUser
-  ): Promise<{ otp: string; user: IUser }> {
+  public async register(userData: IUser): Promise<void> {
     // Check if user already exists
     const existingUser = await User.findOne({ email: userData.email });
 
@@ -46,7 +46,18 @@ export class AuthService {
 
     await user.save();
 
-    return { user, otp };
+    // Send email
+    sendEmail({
+      to: user.email,
+      subject: 'Email Verification',
+      type: 'emailVerification',
+      context: {
+        fullName: user.fullName,
+        otp,
+      },
+    });
+
+    // return { user, otp };
   }
 
   // Login user with email and password
@@ -135,10 +146,7 @@ export class AuthService {
   }
 
   // Resend otp based for email_verification or reset-password
-  public async resendOtp(
-    email: string,
-    type: OTP_TYPE
-  ): Promise<{ otp: string }> {
+  public async resendOtp(email: string, type: OTP_TYPE): Promise<void> {
     // Check if user exists
     const user = await User.findOne({ email });
 
@@ -172,11 +180,26 @@ export class AuthService {
       verified: false,
     });
 
-    return { otp };
+    // Send email
+    sendEmail({
+      to: user.email,
+      subject:
+        type === OTP_TYPE.EMAIL_VERIFICATION
+          ? 'Email Verification'
+          : 'Reset Password Request',
+      type:
+        type === OTP_TYPE.EMAIL_VERIFICATION
+          ? 'emailVerification'
+          : 'passwordResetRequest',
+      context: {
+        fullName: user.fullName,
+        otp,
+      },
+    });
   }
 
   // Send otp for password reset
-  public async forgotPassword(email: string): Promise<{ otp: string }> {
+  public async forgotPassword(email: string): Promise<void> {
     // Check if user exists
     const user = await User.findOne({ email });
 
@@ -205,7 +228,16 @@ export class AuthService {
       verified: false,
     });
 
-    return { otp };
+    // Send email
+    sendEmail({
+      to: user.email,
+      subject: 'Reset Password Request',
+      type: 'passwordResetRequest',
+      context: {
+        fullName: user.fullName,
+        otp,
+      },
+    });
   }
 
   // Resetting the password from otp of type RESET_PASSWORD
