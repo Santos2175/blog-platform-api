@@ -11,6 +11,7 @@ router.route('/').post(authenticate, tagController.findOrCreateTag);
 
 router
   .route('/:tagId')
-  .patch(authenticate, authorize(['ADMIN']), tagController.approveTag);
+  .patch(authenticate, authorize(['ADMIN']), tagController.approveTag)
+  .delete(authenticate, authorize(['ADMIN']), tagController.deleteTag);
 
 export default router;

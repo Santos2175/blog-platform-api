@@ -1,7 +1,9 @@
-import { isValidObjectId } from 'mongoose';
+import { isValidObjectId, Types } from 'mongoose';
 import { ITag, TagStatus } from '../lib/interface/tags';
 import { Tag } from '../models/tag.model';
 import { ApiError } from '../middlewares/error.middleware';
+import { Blog } from '../models/blog.model';
+import { UserRole } from '../lib/interface/user';
 
 export class TagService {
   // Find tag or create a new one if it does not exist
@@ -17,7 +19,8 @@ export class TagService {
 
     if (tag) return { tag, isNewlyCreated: false };
 
-    const status = role === 'admin' ? TagStatus.APPROVED : TagStatus.PENDING;
+    const status =
+      role === UserRole.ADMIN ? TagStatus.APPROVED : TagStatus.PENDING;
 
     tag = new Tag({
       name: normalized,
@@ -54,6 +57,27 @@ export class TagService {
     await tag.save();
 
     return tag;
+  }
+
+  // Delete tag: only allowed for admin
+  public async deleteTag(tagId: string): Promise<void> {
+    // Check validity of tag id
+    if (!isValidObjectId(tagId)) {
+      throw new ApiError('Invalid tag id', 400);
+    }
+
+    // Check if tag is present and delete it
+    const deleted = await Tag.findByIdAndDelete(tagId);
+
+    if (!deleted) {
+      throw new ApiError('Tag not found', 404);
+    }
+
+    // Remove tag reference from all blogs
+    await Blog.updateMany(
+      { tags: new Types.ObjectId(tagId) },
+      { $pull: { tags: new Types.ObjectId(tagId) } }
+    );
   }
 }
 

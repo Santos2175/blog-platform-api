@@ -58,6 +58,29 @@ export class TagController {
       next(error);
     }
   }
+
+  /**
+   * @route       DELETE /api/v1/tags/:tagId
+   * @access      Private
+   * @description Handles tag deletion: Only for admin
+   */
+  public async deleteTag(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const tagId = req.params.tagId;
+
+      await tagService.deleteTag(tagId);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'Tag deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const tagController = new TagController();
