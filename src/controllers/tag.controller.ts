@@ -35,6 +35,29 @@ export class TagController {
       next(error);
     }
   }
+
+  /**
+   * @route       PATCH /api/v1/tags/:tagId
+   * @access      Private
+   * @description Handles tag approval by admin
+   */
+  public async approveTag(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const tagId = req.params.tagId;
+
+      const tag = await tagService.approveTag(tagId);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'Tag approved', data: { tag } });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const tagController = new TagController();

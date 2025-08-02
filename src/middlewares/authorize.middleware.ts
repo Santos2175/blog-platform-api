@@ -1,4 +1,4 @@
-import { NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../lib/interface/request';
 import { ApiError } from './error.middleware';
 
