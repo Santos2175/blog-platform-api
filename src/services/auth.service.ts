@@ -47,7 +47,7 @@ export class AuthService {
 
     const payload = {
       _id: user._id.toString(),
-      email: user.email,
+      role: user.role,
     };
 
     // Generate access and refresh token
