@@ -16,7 +16,8 @@ router.route('/my-blogs').get(authenticate, blogController.getMyBlogs);
 router
   .route('/:blogId')
   .get(blogController.getBlogById)
-  .patch(authenticate, blogController.updateBlog);
+  .patch(authenticate, blogController.updateBlog)
+  .delete(authenticate, blogController.deleteBlogById);
 
 router.route('/:userId/blogs').get(blogController.getBlogsByUser);
 

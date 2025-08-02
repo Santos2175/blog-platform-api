@@ -3,7 +3,7 @@ import { blogService } from '../services/blog.service';
 import { IBlog } from '../lib/interface/blog';
 import { AuthenticatedRequest } from '../lib/interface/request';
 
-class BlogController {
+export class BlogController {
   /**
    * @route       GET /api/v1/blogs/
    * @access      Public
@@ -149,6 +149,30 @@ class BlogController {
         message: 'Blog updated successfully',
         data: { updatedBlog },
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @route       DELETE /api/v1/blogs/:blogId
+   * @access      Private
+   * @description Handles blog deletion by id for authenticated user
+   */
+  public async deleteBlogById(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?._id;
+      const blogId = req.params.blogId;
+
+      await blogService.deleteBlogById(blogId, userId!);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'Blog deleted successfully' });
     } catch (error) {
       next(error);
     }

@@ -107,6 +107,23 @@ export class BlogService {
 
     return blog;
   }
+
+  // Delete blog by id for authenticated user only
+  public async deleteBlogById(blogId: string, userId: string): Promise<void> {
+    // Check if blog id is valid
+    if (!isValidObjectId(blogId)) {
+      throw new ApiError('Invalid blog id', 400);
+    }
+
+    // Check if blog exists
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) {
+      throw new ApiError('Blog not found', 404);
+    }
+
+    await Blog.deleteOne({ _id: blogId, author: userId });
+  }
 }
 
 export const blogService = new BlogService();
