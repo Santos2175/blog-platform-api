@@ -3,6 +3,7 @@ import { ApiError } from '../middlewares/error.middleware';
 import { Blog } from '../models/blog.model';
 import { IBlog } from '../lib/interface/blog';
 import { User } from '../models/user.model';
+import { tagService } from './tag.service';
 
 export class BlogService {
   // Get all the blogs
@@ -55,7 +56,16 @@ export class BlogService {
   }
 
   // Create new blog
-  public async createBlog(blogData: Omit<IBlog, 'author'>, userId: string) {
+  public async createBlog(
+    blogData: {
+      title: string;
+      content: string;
+      author: Types.ObjectId;
+      tags: string[];
+    },
+    userId: string,
+    role: string
+  ) {
     const authorId = new Types.ObjectId(userId);
 
     // Check if particular user has the blog with the new title already
@@ -68,10 +78,25 @@ export class BlogService {
       throw new ApiError('You already have a blog with this title', 409);
     }
 
+    // Prepare tags and add to blog
+    let tagIds: Types.ObjectId[] = [];
+
+    if (blogData.tags && blogData.tags.length > 0) {
+      for (const tagName of blogData.tags) {
+        const { tag } = await tagService.findOrCreateTag(
+          { name: tagName },
+          userId!,
+          role
+        );
+        tagIds.push(tag._id);
+      }
+    }
+
     const blog = new Blog({
       title: blogData.title,
       content: blogData.content,
       author: authorId,
+      tags: tagIds,
     });
 
     await blog.save();

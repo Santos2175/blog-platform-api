@@ -1,5 +1,5 @@
 import { isValidObjectId, Types } from 'mongoose';
-import { ITag, TagStatus } from '../lib/interface/tags';
+import { ITag, ITagResponse, TagStatus } from '../lib/interface/tags';
 import { Tag } from '../models/tag.model';
 import { ApiError } from '../middlewares/error.middleware';
 import { Blog } from '../models/blog.model';
@@ -11,13 +11,17 @@ export class TagService {
     TagData: Pick<ITag, 'name'>,
     userId: string,
     role: string
-  ): Promise<{ tag: ITag; isNewlyCreated: boolean }> {
+  ): Promise<{ tag: ITagResponse; isNewlyCreated: boolean }> {
     const normalized = TagData.name.trim().toLowerCase();
 
     // Check if tag already exists to avoid dubplicate tag creation
     let tag = await Tag.findOne({ name: normalized });
 
-    if (tag) return { tag, isNewlyCreated: false };
+    if (tag) {
+      // Convert to plain object and assert type
+      const plainTag = tag.toObject() as unknown as ITagResponse;
+      return { tag: plainTag, isNewlyCreated: false };
+    }
 
     const status =
       role === UserRole.ADMIN ? TagStatus.APPROVED : TagStatus.PENDING;
@@ -30,7 +34,10 @@ export class TagService {
 
     await tag.save();
 
-    return { tag, isNewlyCreated: true };
+    // Convert to plain object and assert type
+    const plainTag = tag.toObject() as unknown as ITagResponse;
+
+    return { tag: plainTag, isNewlyCreated: true };
   }
 
   // Approve the tag requested by author

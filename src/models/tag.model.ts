@@ -32,4 +32,4 @@ tagSchema.set('toJSON', {
 });
 
 // Tag model to communicate to the database
-export const Tag = model('Tag', tagSchema);
+export const Tag = model<ITag>('Tag', tagSchema);

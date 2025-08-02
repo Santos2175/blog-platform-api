@@ -6,6 +6,7 @@ export interface IBlog {
   content: string;
   author: Types.ObjectId;
   comments?: Types.ObjectId[];
+  tags?: Types.ObjectId[];
 }
 
 // Represents shape of user object used during API response

@@ -109,9 +109,10 @@ export class BlogController {
   ): Promise<void> {
     try {
       const userId = req.user?._id;
-      const blogData: IBlog = req.body;
+      const role = req.user?.role;
+      const blogData = req.body;
 
-      const blog = await blogService.createBlog(blogData, userId!);
+      const blog = await blogService.createBlog(blogData, userId!, role!);
 
       res.status(200).json({
         success: true,
