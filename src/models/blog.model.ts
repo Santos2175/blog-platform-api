@@ -19,6 +19,7 @@ const blogSchema = new Schema<IBlog>(
       required: true,
       index: true,
     },
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   },
   { timestamps: true }
 );
