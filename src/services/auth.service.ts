@@ -1,5 +1,5 @@
 import { OTP_TYPE } from '../lib/interface/Otp';
-import { IUser, IUserResponse } from '../lib/interface/user';
+import { IUser } from '../lib/interface/user';
 import { generateOtp } from '../lib/utils/otp';
 import { comparePassword, hashPassword } from '../lib/utils/password';
 import { generateAccessToken, generateRefreshToken } from '../lib/utils/token';
@@ -92,6 +92,42 @@ export class AuthService {
 
     user.refreshToken = undefined;
     await user.save();
+  }
+
+  // Verify email
+  public async verifyEmail(otp: string): Promise<void> {
+    // Check opt for validity
+    const emailVerificationOtp = await Otp.findOne({
+      otp,
+      type: OTP_TYPE.EMAIL_VERIFICATION,
+      expiresAt: { $gt: Date.now() },
+      verified: false,
+    });
+
+    if (!emailVerificationOtp) {
+      throw new ApiError('Invalid or expired verification otp', 400);
+    }
+
+    // Find the user linked with this otp
+    const user = await User.findOne({ email: emailVerificationOtp.email });
+
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    user.isEmailVerified = true;
+    await user.save();
+
+    // Mark OTP as used
+    emailVerificationOtp.verified = true;
+    await emailVerificationOtp.save();
+
+    // Delete all other unused email_verification OTPs for the user
+    await Otp.deleteMany({
+      email: user.email,
+      type: OTP_TYPE.EMAIL_VERIFICATION,
+      verified: false,
+    });
   }
 }
 

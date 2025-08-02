@@ -23,7 +23,7 @@ const OtpSchema = new Schema<IOtp>(
       type: Date,
       required: true,
     },
-    vefified: {
+    verified: {
       type: Boolean,
       default: false,
     },

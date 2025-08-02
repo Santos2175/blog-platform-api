@@ -81,6 +81,29 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+   * @route       POST /api/v1/auth/verify-email
+   * @access      Public
+   * @description Handles email verification
+   */
+  public async verifyEmail(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { otp } = req.body;
+
+      await authService.verifyEmail(otp);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'Email verified successfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();

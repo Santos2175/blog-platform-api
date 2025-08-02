@@ -14,9 +14,13 @@ const router = Router();
 router
   .route('/register')
   .post(validateInput(userRegisterSchema), authController.register);
+
 router
   .route('/login')
   .post(validateInput(userLoginSchema), authController.login);
+
 router.route('/logout').post(authenticate, authController.logout);
+
+router.route('/verify-email').post(authController.verifyEmail);
 
 export default router;

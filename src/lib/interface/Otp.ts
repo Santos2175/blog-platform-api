@@ -12,7 +12,7 @@ export interface IOtp {
   otp: string;
   type: OTP_TYPE;
   expiresAt: Date;
-  vefified: boolean;
+  verified: boolean;
 }
 
 // Represents the shape of otp structure used during API response
