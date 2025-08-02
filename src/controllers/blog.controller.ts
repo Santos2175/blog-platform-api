@@ -53,6 +53,31 @@ class BlogController {
   }
 
   /**
+   * @route       GET /api/v1/blogs/my-blogs
+   * @access      Private
+   * @description Handles retrieving blogs of authenticated user
+   */
+  public async getMyBlogs(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?._id;
+
+      const blogs = await blogService.getMyBlogs(userId!);
+
+      res.status(200).json({
+        success: true,
+        message: 'Blogs retrieved successfully',
+        data: { blogs },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * @route       GET /api/v1/blogs/:blogId
    * @access      Public
    * @description Handles getting blog by id

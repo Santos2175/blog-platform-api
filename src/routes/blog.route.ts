@@ -11,6 +11,8 @@ router
   .get(blogController.getAllBlogs)
   .post(authenticate, blogController.createBlog);
 
+router.route('/my-blogs').get(authenticate, blogController.getMyBlogs);
+
 router
   .route('/:blogId')
   .get(blogController.getBlogById)

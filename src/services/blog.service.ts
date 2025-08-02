@@ -47,6 +47,13 @@ export class BlogService {
     return blogs;
   }
 
+  // Get blogs for authenticated user
+  public async getMyBlogs(userId: string): Promise<IBlog | IBlog[]> {
+    const blogs = await Blog.find({ author: userId }).sort({ created: -1 });
+
+    return blogs;
+  }
+
   // Create new blog
   public async createBlog(blogData: Omit<IBlog, 'author'>, userId: string) {
     const authorId = new Types.ObjectId(userId);
