@@ -5,7 +5,7 @@ import { validateInput } from '../middlewares/validateInput.middleware';
 import {
   addCommentSchema,
   editCommentSchema,
-} from '../validators/comment.validator';
+} from '../lib/validators/comment.validator';
 
 // Router initialization
 const router = Router();

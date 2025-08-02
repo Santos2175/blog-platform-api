@@ -5,7 +5,7 @@ import { validateInput } from '../middlewares/validateInput.middleware';
 import {
   userLoginSchema,
   userRegisterSchema,
-} from '../validators/user.validator';
+} from '../lib/validators/user.validator';
 
 // Router initialization
 const router = Router();

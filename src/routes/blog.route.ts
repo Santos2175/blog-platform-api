@@ -5,7 +5,7 @@ import { validateInput } from '../middlewares/validateInput.middleware';
 import {
   blogInputSchema,
   blogUpdateSchema,
-} from '../validators/blog.validator';
+} from '../lib/validators/blog.validator';
 
 // Router initialization
 const router = Router();

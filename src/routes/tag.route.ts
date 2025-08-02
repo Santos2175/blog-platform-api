@@ -3,7 +3,7 @@ import { authenticate } from '../middlewares/authenticate.middleware';
 import { tagController } from '../controllers/tag.controller';
 import { authorize } from '../middlewares/authorize.middleware';
 import { validateInput } from '../middlewares/validateInput.middleware';
-import { tagInputSchema } from '../validators/tag.validator';
+import { tagInputSchema } from '../lib/validators/tag.validator';
 
 // Router initialization
 const router = Router();
