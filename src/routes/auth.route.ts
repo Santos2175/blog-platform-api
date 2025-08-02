@@ -29,4 +29,8 @@ router.route('/forgot-password').post(authController.forgotPassword);
 
 router.route('/reset-password').post(authController.resetPassword);
 
+router
+  .route('/refresh')
+  .post(authController.verifyRefreshTokenAndGenerateAccessToken);
+
 export default router;

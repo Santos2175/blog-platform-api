@@ -2,7 +2,11 @@ import { OTP_TYPE } from '../lib/interface/Otp';
 import { IUser } from '../lib/interface/user';
 import { generateOtp, getOtpExpiry } from '../lib/utils/otp';
 import { comparePassword, hashPassword } from '../lib/utils/password';
-import { generateAccessToken, generateRefreshToken } from '../lib/utils/token';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyToken,
+} from '../lib/utils/token';
 import { ApiError } from '../middlewares/error.middleware';
 import { Otp } from '../models/Otp.model';
 import { User } from '../models/user.model';
@@ -245,6 +249,31 @@ export class AuthService {
       type: OTP_TYPE.RESET_PASSWORD,
       verified: false,
     });
+  }
+
+  // Generate access token from refresh token
+  public async verifyRefreshTokenAndGenerateAccessToken(
+    refreshToken: string
+  ): Promise<string> {
+    // Verify refresh token
+    const payload = verifyToken(refreshToken, 'refresh');
+
+    if (!payload) {
+      throw new ApiError('Invalid refresh token', 401);
+    }
+
+    const user = await User.findById(payload._id);
+
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    const accessToken = generateAccessToken({
+      _id: user._id.toString(),
+      role: user.role,
+    });
+
+    return accessToken;
   }
 }
 

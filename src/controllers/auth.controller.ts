@@ -177,6 +177,36 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+   * @route       POST /api/v1/auth/refresh
+   * @access      Public
+   * @description Handles generation of access token from refresh token
+   */
+  public async verifyRefreshTokenAndGenerateAccessToken(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      // There is better way to send refresh token more securely. For now
+      // it is being sent through request body
+      const { refreshToken } = req.body;
+
+      const accessToken =
+        await authService.verifyRefreshTokenAndGenerateAccessToken(
+          refreshToken
+        );
+
+      res.status(200).json({
+        success: true,
+        message: 'Access token generated',
+        data: { accessToken },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();
