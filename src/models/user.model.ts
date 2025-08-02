@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IUser } from '../lib/interface/user';
+import { IUser, UserRole } from '../lib/interface/user';
 
 // User schema definition
 const userSchema = new Schema<IUser>(
@@ -16,6 +16,11 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
+    },
+    role: {
+      type: String,
+      role: UserRole,
+      default: UserRole.USER,
     },
     refreshToken: {
       type: String,
