@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 // Represents shape of comment object used during creation
 export interface IComment {
   content: string;
-  post: Types.ObjectId;
+  blog: Types.ObjectId;
   author: Types.ObjectId;
 }
 
