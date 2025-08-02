@@ -171,6 +171,7 @@ export class AuthService {
     return { otp };
   }
 
+  // Send otp for password reset
   public async forgotPassword(email: string): Promise<{ otp: string }> {
     // Check if user exists
     const user = await User.findOne({ email });
@@ -201,6 +202,49 @@ export class AuthService {
     });
 
     return { otp };
+  }
+
+  // Resetting the password from otp of type RESET_PASSWORD
+  public async resetPassword(
+    otp: string,
+    email: string,
+    newPassword: string
+  ): Promise<void> {
+    // Check if otp exists for email
+    const otpDoc = await Otp.findOne({
+      email,
+      otp,
+      type: OTP_TYPE.RESET_PASSWORD,
+      expiresAt: { $gt: new Date() },
+      verified: false,
+    });
+
+    if (!otpDoc) {
+      throw new ApiError('Invalid or expired OTP', 400);
+    }
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    // Update user's password
+    const hashedPassword = await hashPassword(newPassword);
+    user.password = hashedPassword;
+
+    await user.save();
+
+    otpDoc.verified = true;
+    await otpDoc.save();
+
+    // Cleanup unused otp
+    await Otp.deleteMany({
+      email,
+      type: OTP_TYPE.RESET_PASSWORD,
+      verified: false,
+    });
   }
 }
 

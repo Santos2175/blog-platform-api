@@ -154,6 +154,29 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+   * @route       POST /api/v1/auth/reset-password
+   * @access      Public
+   * @description Handles reset password by checking otp validity
+   */
+  public async resetPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { otp, newPassword, email } = req.body;
+
+      await authService.resetPassword(otp, email, newPassword);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'Password reset successfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();
