@@ -72,6 +72,37 @@ class BlogController {
       next(error);
     }
   }
+
+  /**
+   * @route       PATCH /api/v1/blogs/:blogId
+   * @access      Private
+   * @description Handle blog update for authenticated user
+   */
+  public async updateBlog(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?._id;
+      const blogId = req.params.blogId;
+      const blogData = req.body;
+
+      const updatedBlog = await blogService.updateBlog(
+        blogData,
+        blogId,
+        userId!
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Blog updated successfully',
+        data: { updatedBlog },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const blogController = new BlogController();

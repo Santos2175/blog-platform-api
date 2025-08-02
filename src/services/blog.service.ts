@@ -51,6 +51,35 @@ export class BlogService {
 
     return blog;
   }
+
+  // Update specific blog belonging to authenticated user
+  public async updateBlog(
+    blogData: Partial<IBlog>,
+    blogId: string,
+    userId: string
+  ): Promise<IBlog> {
+    // Check if blog id is valid
+    if (!Types.ObjectId.isValid(blogId)) {
+      throw new ApiError('Invalid blog ID', 400);
+    }
+
+    // Check if blog exists for a particular user
+    const blog = await Blog.findOne({ _id: blogId, author: userId });
+
+    if (!blog) {
+      throw new ApiError('Blog not found', 404);
+    }
+
+    // Update blog
+    const { title, content } = blogData;
+
+    if (typeof title === 'string') blog.title = title;
+    if (typeof content === 'string') blog.content = content;
+
+    await blog.save();
+
+    return blog;
+  }
 }
 
 export const blogService = new BlogService();

@@ -11,6 +11,9 @@ router
   .get(blogController.getAllBlogs)
   .post(authenticate, blogController.createBlog);
 
-router.route('/:blogId').get(blogController.getBlogById);
+router
+  .route('/:blogId')
+  .get(blogController.getBlogById)
+  .patch(authenticate, blogController.updateBlog);
 
 export default router;
