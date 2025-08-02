@@ -15,3 +15,9 @@ export interface IBlogResponse extends IBlog {
   createdAt: Date;
   updated: Date;
 }
+
+// Pick only fields: title,content from IBlog
+// Represents shape for the client input
+export interface IBlogInput extends Pick<IBlog, 'title' | 'content'> {
+  tags?: string[];
+}

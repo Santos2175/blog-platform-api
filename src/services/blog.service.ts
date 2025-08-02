@@ -1,7 +1,7 @@
 import { isValidObjectId, Types } from 'mongoose';
 import { ApiError } from '../middlewares/error.middleware';
 import { Blog } from '../models/blog.model';
-import { IBlog } from '../lib/interface/blog';
+import { IBlog, IBlogInput } from '../lib/interface/blog';
 import { User } from '../models/user.model';
 import { tagService } from './tag.service';
 
@@ -56,16 +56,7 @@ export class BlogService {
   }
 
   // Create new blog
-  public async createBlog(
-    blogData: {
-      title: string;
-      content: string;
-      author: Types.ObjectId;
-      tags: string[];
-    },
-    userId: string,
-    role: string
-  ) {
+  public async createBlog(blogData: IBlogInput, userId: string, role: string) {
     const authorId = new Types.ObjectId(userId);
 
     // Check if particular user has the blog with the new title already

@@ -1,6 +1,11 @@
 import Router from 'express';
 import { blogController } from '../controllers/blog.controller';
 import { authenticate } from '../middlewares/authenticate.middleware';
+import { validateInput } from '../middlewares/validateInput.middleware';
+import {
+  blogInputSchema,
+  blogUpdateSchema,
+} from '../validators/blog.validator';
 
 // Router initialization
 const router = Router();
@@ -9,14 +14,22 @@ const router = Router();
 router
   .route('/')
   .get(blogController.getAllBlogs)
-  .post(authenticate, blogController.createBlog);
+  .post(
+    authenticate,
+    validateInput(blogInputSchema),
+    blogController.createBlog
+  );
 
 router.route('/my-blogs').get(authenticate, blogController.getMyBlogs);
 
 router
   .route('/:blogId')
   .get(blogController.getBlogById)
-  .patch(authenticate, blogController.updateBlog)
+  .patch(
+    authenticate,
+    validateInput(blogUpdateSchema),
+    blogController.updateBlog
+  )
   .delete(authenticate, blogController.deleteBlogById);
 
 router.route('/:userId/blogs').get(blogController.getBlogsByUser);
