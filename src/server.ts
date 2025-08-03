@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { connectToMongoDB } from './config/db.config';
 import { globalErrorHandler } from './middlewares/error.middleware';
 import { undefinedRouteHandler } from './middlewares/route.middleware';
+import cors from 'cors';
 import apiRoutes from './routes/index';
 
 // Load environment variables from .env file
@@ -16,6 +17,15 @@ const app = express();
 
 // Middleware to parse JSON requests
 app.use(express.json());
+
+// CORS setup
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 // API routes
 app.use('/api/v1', apiRoutes);
