@@ -20,7 +20,7 @@ export class AuthService {
     const existingUser = await User.findOne({ email: userData.email });
 
     if (existingUser) {
-      throw new ApiError('Email already in use', 400);
+      throw new ApiError('Email already in use', 409);
     }
 
     // Hash password
@@ -66,19 +66,19 @@ export class AuthService {
     const user = await User.findOne({ email: userData.email });
 
     if (!user) {
-      throw new ApiError('Invalid Credentials', 400);
+      throw new ApiError('Invalid Credentials', 401);
     }
 
     // Check credentials
     const isMatch = await comparePassword(userData.password, user.password);
 
     if (!isMatch) {
-      throw new ApiError('Invalid Credentials', 400);
+      throw new ApiError('Invalid Credentials', 401);
     }
 
     // Check if email is verified
     if (!user.isEmailVerified) {
-      throw new ApiError('Email not verified. Please verify your email', 400);
+      throw new ApiError('Email not verified. Please verify your email', 403);
     }
 
     const payload = {
@@ -120,7 +120,7 @@ export class AuthService {
     });
 
     if (!emailVerificationOtp) {
-      throw new ApiError('Invalid or expired verification otp', 400);
+      throw new ApiError('Invalid or expired verification otp', 401);
     }
 
     // Find the user linked with this otp
@@ -256,7 +256,7 @@ export class AuthService {
     });
 
     if (!otpDoc) {
-      throw new ApiError('Invalid or expired OTP', 400);
+      throw new ApiError('Invalid or expired OTP', 401);
     }
 
     // Check if user exists
