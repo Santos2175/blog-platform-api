@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  blogify-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blogify-api
+    ports:
+      - '${PORT}:5000'
+    environment:
+      - PORT=${PORT}
+      - MONGODB_URI=${MONGODB_URI}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - EMAIL_ADDRESS=${EMAIL_ADDRESS}
+    restart: unless-stopped
