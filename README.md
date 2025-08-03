@@ -32,6 +32,7 @@ A robust, scalable REST API for a modern blog platform built with Node.js, TypeS
 - [🚀 Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+  - [Build and run With Docker](#build-and-run-with-docker)
   - [Environment Setup](#environment-setup)
   - [Database Setup](#database-setup)
 - [📁 Project Structure](#-project-structure)
@@ -135,6 +136,7 @@ A robust, scalable REST API for a modern blog platform built with Node.js, TypeS
 - **Templates**: Handlebars for email templates
 - **Password Hashing**: bcryptjs
 - **Development**: Nodemon with ts-node
+- **Containerization**: Docker
 
 ### Database Schema
 
@@ -312,6 +314,22 @@ A robust, scalable REST API for a modern blog platform built with Node.js, TypeS
    npm run build
    npm start
    ```
+
+### Build and Run with Docker
+
+**Optionally, you can run the app through Docker**(Docker Desktop need to be installed)
+
+1. **Build image with Docker**
+
+```bash
+docker build -t blogify-api .
+```
+
+2. **Build container from docker image and run**
+
+```bash
+docker run -d -p 3000:3000 --env-file .env blogify-api
+```
 
 ### Environment Variables
 
