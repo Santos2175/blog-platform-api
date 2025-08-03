@@ -419,7 +419,6 @@ blog-platform-api/
 - `npm run dev` - Start development server with hot reload
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm start` - Start production server
-- `npm run lint` - Run ESLint (if configured)
 
 ---
 
