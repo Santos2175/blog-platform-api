@@ -633,96 +633,9 @@ Comprehensive input validation with custom error messages:
 
 ## 📚 API Documentation
 
-### Authentication Endpoints
+The comprehensive detailed documentation of blog platform api is provided in the link below:
 
-#### Register User
-
-```http
-POST /api/v1/auth/register
-Content-Type: application/json
-
-{
-  "fullName": "John Doe",
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-#### Login User
-
-```http
-POST /api/v1/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-#### Verify Email
-
-```http
-POST /api/v1/auth/verify-email
-Content-Type: application/json
-
-{
-  "otp": "123456"
-}
-```
-
-### Blog Endpoints
-
-#### Get All Blogs
-
-```http
-GET /api/v1/blogs?search=javascript&tag=programming&page=1&limit=10
-Authorization: Bearer <access_token>
-```
-
-#### Create Blog
-
-```http
-POST /api/v1/blogs
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "title": "Getting Started with TypeScript",
-  "description": "A comprehensive guide to TypeScript...",
-  "tags": ["typescript", "programming"]
-}
-```
-
-### Comment Endpoints
-
-#### Add Comment
-
-```http
-POST /api/v1/comments/:blogId
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "content": "Great article! Very helpful."
-}
-```
-
-### Tag Endpoints
-
-#### Create Tag
-
-```http
-POST /api/v1/tags
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "name": "machine-learning"
-}
-```
-
----
+- [Api Documentation](API_DOCS.md)
 
 ## 🙏 Acknowledgments
 
