@@ -331,6 +331,20 @@ docker build -t blogify-api .
 docker run -d -p 3000:3000 --env-file .env blogify-api
 ```
 
+**Alternatively, you can build and run container with docker-compose as**
+
+1. **Build and run container**
+
+```bash
+docker-compose up --build -d
+```
+
+2. **For stopping the container**
+
+```bash
+docker-compose down
+```
+
 ### Environment Variables
 
 | Variable               | Description               | Required | Default     |
